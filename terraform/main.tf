@@ -53,7 +53,7 @@ resource "azurerm_container_app" "app" {
   }
 
   secret {
-    name  = "acr_password"
+    name  = "acr-password"
     value = azurerm_container_registry.acr.admin_password
   }
 
