@@ -1,0 +1,19 @@
+{
+  "name": "rp002-learn-iaac-cicd",
+  "version": "1.0.0",
+  "description": "This is learning project for IaaC and CI/CD pipelines",
+  "repository": {
+    "type": "git",
+    "url": "https://rambabu-patidar-org@dev.azure.com/rambabu-patidar-org/ram-learning-azure-devops/_git/rp002-learn-iaac-cicd"
+  },
+  "license": "MIT",
+  "author": "Rambabu Patidar",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
