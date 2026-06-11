@@ -34,12 +34,21 @@ stages:
               backendAzureRmContainerName: "tfstate"
               backendAzureRmKey: "prod.terraform.tfstate"
           - task: TerraformTaskV4@4
+            displayName: "Terraform Plan"
+            inputs:
+              provider: "azurerm"
+              command: "plan"
+              workingDirectory: "$(System.DefaultWorkingDirectory)/terraform"
+              environmentServiceNameAzureRM: "$(azureServiceConnection)"
+              commandOptions: "-out=tfplan" # Saves the plan output safely to a file
+          - task: TerraformTaskV4@4
             displayName: "Terraform Apply"
             inputs:
               provider: "azurerm"
               command: "apply"
               workingDirectory: "$(System.DefaultWorkingDirectory)/terraform"
               environmentServiceNameAzureRM: "$(azureServiceConnection)"
+              commandOptions: "tfplan"
   # Step 02: Continous Integration.
   - stage: BuildAndPushDocker
     displayName: "Build and Push Container Image"
