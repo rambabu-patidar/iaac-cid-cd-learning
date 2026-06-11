@@ -1,0 +1,77 @@
+trigger:
+  - main
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  azureServiceConnection: "scn-rp-devops-to-azure"
+  acrName: "acrrp002learniaaccicd"
+  imageRepository: "ir-rp002-learn-iaac-cicd"
+  tag: "$(Build.BuildId)" # Automatically creates a unique version ID for each build
+
+stages:
+  # Stage 01: infrastructure as a code
+  - stage: ProvisionInfrastructure
+    displayName: "Terraform Plan & Apply"
+    jobs:
+      - job: Terraform
+        steps:
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Init"
+            inputs:
+              provider: "azurerm"
+              command: "init"
+              workingDirectory: "$(System.DefaultWorkingDirectory)/terraform"
+              backendServiceArm: "$(azureServiceConnection)"
+              backendAzureRmResourceGroupName: "rg-rp002-learn-iaac-cicd-tf-state" # Group for backend state file
+              backendAzureRmStorageAccountName: "sarp002tfstatestorage"
+              backendAzureRmContainerName: "tfstate"
+              backendAzureRmKey: "prod.terraform.tfstate"
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Apply"
+            inputs:
+              provider: "azurerm"
+              command: "apply"
+              workingDirectory: "$(System.DefaultWorkingDirectory)/terraform"
+              environmentServiceNameAzureRM: "$(azureServiceConnection)"
+  # Step 02: Continous Integration.
+  - stage: BuildAndPushDocker
+    displayName: "Build and Push Container Image"
+    dependsOn: ProvisionInfrastructure
+    jobs:
+      - job: Build
+        steps:
+          - task: Docker@2
+            displayName: "Build and Push Image to ACR"
+            inputs:
+              command: "buildAndPush"
+              containerRegistry: "$(azureServiceConnection)"
+              repository: "$(imageRepository)"
+              dockerfile: "$(System.DefaultWorkingDirectory)/Dockerfile"
+              tags: |
+                $(tag)
+                latest
+  # Step 03: Continous Delivery (CD)
+  - stage: DeployToContainerApp
+    displayName: "Deploy to Azure Container App"
+    dependsOn: BuildAndPushDocker # Only runs if the Docker build finishes successfully
+    jobs:
+      - job: Deploy
+        steps:
+          # This task updates the Container App to pull the exact image tag we just built
+          - task: AzureCLI@2
+            displayName: "Update Container App Image"
+            inputs:
+              azureSubscription: "$(azureServiceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                # Fetch the ACR Login Server string dynamically
+                ACR_SERVER=$(az acr show --name $(acrName) --query loginServer --output tsv)
+
+                # Force the Azure Container App to update to the new container image version
+                az containerapp update \
+                  --name ca-rp002-learn-iaac-cicd \
+                  --resource-group rg-rp002-learn-iaac-cicd \
+                  --image $ACR_SERVER/$(imageRepository):$(tag)
