@@ -1,20 +1,13 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Learn Infrastructure as Code and CI/CD deployments
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+I will be creating a very very simple node API which only one route. 
+But we will try to deploy it through the CI/CD pipelines and will create our infrastructure with the help of 
+terraform.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+Our application will run in a Docker container and the container will be stored in the Azure Container Registry.
+We will be Azure App Service to get the Proxy URL for our applications so that the internal URL of our application 
+is not exposed to the outside world.
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
-
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+PS: I will be heavily dependent on the Gemini for this task. But I will be learning all the concepts that are 
+getting used here. Now just copy pasting blindly. This is the best way of learning I guess. You can see the outputs 
+and then you try to figure out why it worked going inside deeply.
