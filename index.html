@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rambabu Patidar</title>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: sans-serif;
+      font-size: larger;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    header {
+      background-color: black;
+      color: white;
+    }
+
+    nav ul {
+      list-style-type: none;
+      display: flex;
+      justify-content: space-evenly;
+    }
+
+    nav ul li {
+      padding: 1rem;
+    }
+
+    nav ul li:hover {
+      color: gold;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+    }
+
+    main {
+      background-color: #b6b6b6;
+      flex-grow: 1;
+      display: grid;
+      place-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #about,
+    #experience,
+    #contact {
+      margin: 2rem;
+      min-width: 95vw;
+      min-height: 85vh;
+      background-color: white;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #about:hover,
+    #experience:hover,
+    #contact:hover {
+      outline: 0.01px solid grey;
+    }
+
+    h1 {
+      text-align: center;
+      padding: 1rem 0 0 0;
+      border-bottom: 0.5px solid #b6b6b6;
+    }
+
+    .my-info {
+      display: grid;
+      grid-template-columns: auto auto;
+      flex: 1;
+    }
+
+    @media screen and (max-width: 850px) {
+      .my-info {
+        grid-template-columns: auto;
+      }
+    }
+
+
+    .text-info,
+    .photo {
+      text-align: center;
+      margin: auto 0;
+    }
+
+    .text-info h2 {
+      font-size: 4rem;
+    }
+
+    @media screen and (max-width: 575px) {
+      .photo img {
+        width: 100%;
+      }
+
+      .text-info h2 {
+        font-size: 3rem;
+      }
+    }
+
+    .exp-section {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .exp-list {
+      display: flex;
+      justify-content: space-evenly;
+      flex-wrap: wrap;
+      list-style-type: None;
+      margin: 0;
+    }
+
+    .exp {
+      width: 25rem;
+      text-align: center;
+      background-color: whitesmoke;
+      border-radius: 10px;
+      margin: 1rem 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .exp h3 {
+      padding: 1rem;
+      background-color: black;
+      color: white;
+    }
+
+    .exp p {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .exp:hover {
+      background-color: white;
+      border: .001px solid grey;
+    }
+
+    .contact-section {
+      flex: 1;
+      display: flex;
+      justify-content: flex-start;
+      margin: 2rem;
+    }
+
+    .social-sec {
+      display: flex;
+      justify-content: space-evenly;
+      list-style-type: None;
+      margin: 0;
+      flex-wrap: wrap;
+    }
+
+    .social-sec li {
+      background-color: white;
+      border: 1px solid #b6b6b6;
+      width: 25rem;
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background-color: whitesmoke;
+    }
+
+    .social-sec li:hover {
+      background-color: white;
+      border: .001px solid grey;
+    }
+
+    @media screen and (max-width:475px) {
+
+      .social-sec li,
+      .exp {
+        width: 100%;
+      }
+
+      header {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li> <a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#contact">Contact Me</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="about">
+      <h1>About</h1>
+      <div class="my-info">
+        <div class="photo">
+          <img src="/ram.png" alt="ram similing looking in front" width="500px">
+        </div>
+        <div class="text-info">
+          <h2>Rambabu Patidar</h2>
+          <p><i>Building, Practising, and Deploying and gathering experience.</i></p>
+        </div>
+      </div>
+    </section>
+    <section id="experience">
+      <h1>Experience</h1>
+      <div class="exp-section">
+        <ul class="exp-list">
+          <li class="exp">
+            <h3>Lorem, ipsum.</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus, corporis.
+            </p>
+          </li>
+          <li class="exp">
+            <h3>Lorem, ipsum.</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus, corporis.
+          </li>
+          <li class="exp">
+            <h3>Lorem, ipsum.</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus, corporis.
+          </li>
+          <li class="exp">
+            <h3>Lorem, ipsum.</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus, corporis.
+          </li>
+          <li class="exp">
+            <h3>Lorem, ipsum.</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus, corporis.
+          </li>
+          <li class="exp">
+            <h3>Lorem, ipsum.</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus, corporis.
+          </li>
+
+        </ul>
+      </div>
+    </section>
+    <section id="contact">
+      <h1>Contact Me</h1>
+      <div class="contact-section">
+        <ul class="social-sec">
+          <li>
+            <h3>LinkedIn</h3>
+          </li>
+          <li>
+            <h3>GitHub</h3>
+          </li>
+          <li>
+            <h3>Portfolio</h3>
+          </li>
+          <li>
+            <h3>Email</h3>
+          </li>
+          <li>
+            <h3>Medium</h3>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>
