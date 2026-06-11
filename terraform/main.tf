@@ -49,7 +49,7 @@ resource "azurerm_container_app" "app" {
   registry {
     server                  = azurerm_container_registry.acr.login_server
     username                = azurerm_container_registry.acr.admin_username
-    password_secret_name    = "acr_password"
+    password_secret_name    = "acr-password"
   }
 
   secret {
