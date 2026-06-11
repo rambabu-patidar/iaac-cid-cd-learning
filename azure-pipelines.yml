@@ -17,6 +17,11 @@ stages:
     jobs:
       - job: Terraform
         steps:
+          # ADD THIS TASK FIRST TO INSTALL TERRAFORM ON THE BUILD AGENT
+          - task: TerraformInstaller@1
+            displayName: "Install Terraform"
+            inputs:
+              terraformVersion: "latest" # Automatically downloads the newest stable version
           - task: TerraformTaskV4@4
             displayName: "Terraform Init"
             inputs:
