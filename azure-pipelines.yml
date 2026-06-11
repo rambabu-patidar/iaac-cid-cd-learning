@@ -42,16 +42,20 @@ stages:
     jobs:
       - job: Build
         steps:
-          - task: Docker@2
-            displayName: "Build and Push Image to ACR"
+          # This task uses your existing Azure RM connection to build the image in the cloud
+          - task: AzureCLI@2
+            displayName: "Build and Push Image via ACR CLI"
             inputs:
-              command: "buildAndPush"
-              containerRegistry: "$(azureServiceConnection)"
-              repository: "$(imageRepository)"
-              dockerfile: "$(System.DefaultWorkingDirectory)/Dockerfile"
-              tags: |
-                $(tag)
-                latest
+              azureSubscription: "$(azureServiceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                # Use ACR's native cloud builder to build and push the image automatically
+                az acr build \
+                  --registry $(acrName) \
+                  --image $(imageRepository):$(tag) \
+                  --image $(imageRepository):latest \
+                  $(System.DefaultWorkingDirectory)
   # Step 03: Continous Delivery (CD)
   - stage: DeployToContainerApp
     displayName: "Deploy to Azure Container App"
