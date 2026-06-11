@@ -6,6 +6,7 @@ terraform {
       version = "~> 3.0"
     }
   }
+  backend "azurerm" {}
 }
 
 provider "azurerm" {
@@ -70,7 +71,7 @@ resource "azurerm_container_app" "app" {
   template {
     container {
       name   = "node-api"
-      image  = "://microsoft.com" # Temporary bootstrap image
+      image  = "nginx:latest" # Temporary bootstrap image
       cpu    = "0.25"
       memory = "0.5Gi"
       
