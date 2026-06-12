@@ -22,7 +22,7 @@ We created a minimal, production-ready Express API with flexible port binding an
 
 - package.json: Managed dependencies (express).
 - server.js:
-
+```js
 const express = require('express');const app = express();const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
@@ -41,17 +41,31 @@ documentation: "Authentication is skipped. This API is fully public."
 app.listen(PORT, () => {
 console.log(`Server running on port ${PORT}`);
 });
+```
 
 ## Step 2: Multi-Stage Containerization
 
 To guarantee optimal security and minimum image footprint, we engineered a multi-stage Dockerfile.
 
-## --- Stage 1: Build ---FROM node:20-alpine AS builderWORKDIR /appCOPY package\*.json ./RUN npm ci --only=production
+```docker 
+--- Stage 1: Build ---
+FROM node:20-alpine AS builderWORKDIR /app
+COPY package\*.json ./
+RUN npm ci --only=production
+```
 
-## --- Stage 2: Runtime ---FROM node:20-alpineWORKDIR /appCOPY --from=builder /app/node_modules ./node_modulesCOPY package.json ./COPY server.js ./
+```docker
+--- Stage 2: Runtime ---
+FROM node:20-alpineWORKDIR /app
+COPY --from=builder /app/node_modules ./node_modules
+COPY package.json ./
+COPY server.js ./
 
-ENV NODE_ENV=productionENV PORT=3000EXPOSE 3000CMD ["npm", "start"]
-
+ENV NODE_ENV=production
+ENV PORT=3000
+EXPOSE 3000
+CMD ["npm", "start"]
+```
 - .dockerignore: Added to exclude local node_modules, .git, and environment logs from leaking into image layers.
 
 ## Step 3 & 4: Declarative Infrastructure via Terraform
@@ -78,9 +92,9 @@ During deployment, we encountered real-world DevOps edge cases. Below is the ful
 
 ## Challenge 1: The Azure DevOps Service Connection Setup Dilemma
 
-- The Problem: The pipeline required an Azure Resource Manager Service Connection to deploy infrastructure. However, the interface requested a target Resource Group, which did not exist yet because Terraform had not run.
+- The Problem: The pipeline required an Azure Resource Manager Service Connection to deploy infrastructure. However, the interface in Azure Devops requested a target Resource Group, which did not exist yet because Terraform had not run.
 - The Root Cause: A traditional "chicken-and-egg" paradigm.
-- The Resolution: We bypassed the validation constraint by selecting a Subscription scope level and leaving the Resource Group selection dropdown blank. This granted the pipeline subscription-level authority to build new resource groups from scratch. Additionally, we adopted the industry-standard Workload Identity Federation (App registration automatic) authentication method to leverage zero-secret OpenID Connect tokens.
+- The Resolution: We bypassed the validation constraint by selecting a Subscription scope level and leaving the Resource Group selection dropdown blank in Azure DevOps while creating the Service Connection. This granted the pipeline subscription-level authority to build new resource groups from scratch. Additionally, we adopted the industry-standard Workload Identity Federation (App registration automatic) authentication method to leverage zero-secret OpenID Connect tokens.
 
 ## Challenge 2: Incompatible Pipeline Connection Types
 
@@ -111,7 +125,11 @@ During deployment, we encountered real-world DevOps edge cases. Below is the ful
 - The Root Cause: This was the most critical hurdle. Because the main.tf was missing an explicit backend block, Terraform tracked infrastructure tracking data locally on the temporary build machine. When the runner was destroyed at the end of a run, the state history vanished. On subsequent runs, Terraform assumed a blind state and attempted to recreate existing resources, resulting in API resource-clash errors.
 - The Resolution:
 
-1. We added an explicit backend "azurerm" {} placeholder block inside the terraform {} configuration block in main.tf. This forced the engine to use a remote state strategy. 2. We manually provisioned a persistent baseline backend storage account (tfstatestoragesimplenode) and container (tfstate) in the portal to act as the global source of truth. 3. We granted the pipeline's App Registration identity the Storage Blob Data Contributor role to allow it to securely write state tracking data to the storage account. 4. We deleted the clashing resource group in the portal one final time to establish a clean slate. On all subsequent runs, Terraform accurately tracked state changes, avoiding the resource creation conflict.
+0. The Resource Group Creation for TF state and Storage Account and under it creating the Contianer with a name of tfstate was done manually. This can also be done with Terraform.
+1. We added an explicit backend "azurerm" {} placeholder block inside the terraform {} configuration block in main.tf. This forced the engine to use a remote state strategy. 
+2. We manually provisioned a persistent baseline backend storage account (sarp002tfstatestorage) under a new RG (rg-rp002-learn-iaac-cicd-tf-state) and container (tfstate) in the portal to act as the global source of truth. 
+3. We granted the pipeline's App Registration identity the Storage Blob Data Contributor role to allow it to securely write state tracking data to the storage account. 
+4. We deleted the clashing resource group in the portal one final time to establish a clean slate. On all subsequent runs, Terraform accurately tracked state changes, avoiding the resource creation conflict.
 
 ## Challenge 7: Strict Container App Image Format Parsing
 
@@ -129,4 +147,4 @@ During deployment, we encountered real-world DevOps edge cases. Below is the ful
 
 ---
 
-If you are ready to expand this architecture in the future, let me know when you want to look into mapping a custom domain name with an SSL certificate, or how to connect an Azure SQL Database using secure environment variable configurations!
+Thank You. 
