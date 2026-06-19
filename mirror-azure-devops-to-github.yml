@@ -1,0 +1,25 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- group: mirror-azure-devops-to-github
+
+steps:
+- checkout: self
+  fetchDepth: 0
+
+- script: |
+    git config --global user.email "patidarrambabu135@gmail.com"
+    git config --global user.name "Azure DevOps Mirror"
+
+    git clone --mirror $(Build.Repository.Uri) repo.git
+
+    cd repo.git
+
+    git remote add github https://$(GITHUB_USERNAME):$(GITHUB_TOKEN)@github.com/rambabu-patidar/iaac-cid-cd-learning.git
+
+    git push --mirror github
+  displayName: 'Mirror Repository'
